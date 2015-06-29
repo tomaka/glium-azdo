@@ -4,4 +4,4 @@ version = "0.1.0"
 authors = ["Pierre Krieger <pierre.krieger1708@gmail.com>"]
 
 [dependencies]
-glium = "0.6"
+glium = { version = "0.6", default-features = false, features = ["glutin"] }
