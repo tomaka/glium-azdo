@@ -62,7 +62,7 @@ fn main() {
         target.finish().unwrap();
 
         buf_num += 1;
-        if buf_num >= 3 { buf_num = 1; }
+        if buf_num >= 3 { buf_num = 0; }
 
         for event in display.poll_events() {
             match event {
