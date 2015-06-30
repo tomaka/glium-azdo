@@ -12,5 +12,6 @@ Go to each individual directory and `cargo run`. Note that this is very recent O
 
  - Glium doesn't allow creating buffers in write-only mode.
  - Glium handles synchronization but locks the whole buffer instead of parts of it.
+ - When using multiple segments of the same vertex buffer, glium creates several VAOs instead of using glDrawElementsBaseVertex for example.
 
  - Bindless and sparse buffers & textures are not supported.
