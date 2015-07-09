@@ -32,6 +32,7 @@ const OBJECTS_COUNT: usize = OBJECTS_X * OBJECTS_Y * OBJECTS_Z;
 
 fn main() {
     let display = glutin::WindowBuilder::new()
+                    .with_depth_buffer(24)
                     .build_glium()
                     .unwrap();
 
@@ -140,11 +141,13 @@ fn main() {
         let (w, h) = display.get_framebuffer_dimensions();
         let persp = cgmath::perspective(cgmath::deg(45.0), w as f32 / h as f32, 0.1, 10000.0);
         let dir = cgmath::Vector3::new(-0.5, -1.0, 1.0).normalize();
-        let at = dir.mul_s(-250.0);
-        let view = cgmath::Matrix4::look_at(&cgmath::Point3::from_vec(&at),
-                                            &cgmath::Point3::from_vec(&dir),
+        let at = cgmath::Vector3::new(0.0, 0.0, 0.0);
+        let eye = at - dir.mul_s(250.0);
+        let view = cgmath::Matrix4::look_at(&cgmath::Point3::from_vec(&eye),
+                                            &cgmath::Point3::from_vec(&at),
                                             &cgmath::Vector3::new(0.0, 0.0, 1.0));
-        let matrix = persp * view;
+        let pos = cgmath::Matrix4::from_translation(&eye.mul_s(-1.0));
+        let matrix = persp * view * pos;
 
         let params = glium::DrawParameters {
             backface_culling: glium::draw_parameters::BackfaceCullingMode::CullCounterClockWise,
@@ -154,7 +157,7 @@ fn main() {
         };
 
         let mut target = display.draw();
-        target.clear_color_and_depth((0.0, 0.1, 0.0, 1.0), 1.0);
+        target.clear_color_and_depth((0.0, 0.01, 0.0, 1.0), 1.0);
         target.draw((&vertex_buffer, drawids_buffer.per_instance_if_supported().unwrap()),
                     indices, &program, &uniform! { CB0: &transform_buffer, ViewProjection: matrix },
                     &params).unwrap();
