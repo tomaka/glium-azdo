@@ -137,7 +137,8 @@ fn main() {
             primitives: index_buffer.get_primitives_type(),
         };
 
-        let persp = cgmath::perspective(cgmath::deg(45.0), 1.0, 0.1, 10000.0);
+        let (w, h) = display.get_framebuffer_dimensions();
+        let persp = cgmath::perspective(cgmath::deg(45.0), w as f32 / h as f32, 0.1, 10000.0);
         let dir = cgmath::Vector3::new(-0.5, -1.0, 1.0).normalize();
         let at = dir.mul_s(-250.0);
         let view = cgmath::Matrix4::look_at(&cgmath::Point3::from_vec(&at),
