@@ -15,3 +15,7 @@ Go to each individual directory and `cargo run`. Note that this is very recent O
  - When using multiple segments of the same vertex buffer, glium creates several VAOs instead of using glDrawElementsBaseVertex for example.
 
  - Bindless and sparse buffers & textures are not supported.
+
+## Performances
+
+This is no noticable performance difference between the `untextured-objects` code in this repo and the `GLBufferStorage-NoSDP` solution of the official `apitest`.
