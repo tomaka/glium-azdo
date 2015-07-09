@@ -53,7 +53,7 @@ fn main() {
         let mut target = display.draw();
 
         let dimensions = target.get_dimensions();
-        uniforms.write(&[UniformData { viewport: (2.0 / dimensions.0 as f32, -2.0 / dimensions.1 as f32) }]);
+        uniforms.write(&UniformData { viewport: (2.0 / dimensions.0 as f32, -2.0 / dimensions.1 as f32) });
 
         target.clear_color(0.3, 0.0, 0.3, 1.0);
         target.draw(vertex_buffer.slice(buf_num * VERTICES .. (buf_num + 1) * VERTICES).unwrap(),
@@ -73,7 +73,7 @@ fn main() {
     }
 }
 
-fn upload(output: &mut glium::buffer::WriteMapping<Vertex>, iteration: u32) {
+fn upload(output: &mut glium::buffer::WriteMapping<[Vertex]>, iteration: u32) {
     const SPACING: f32 = 1.0;
     const W: f32 = 1.0;
     const H: f32 = 1.0;
