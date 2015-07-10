@@ -1,0 +1,9 @@
+[package]
+name = "textured-quads"
+version = "0.1.0"
+authors = ["Pierre Krieger <pierre.krieger1708@gmail.com>"]
+
+[dependencies]
+glium = { version = "0.7", default-features = false, features = ["glutin", "cgmath"] }
+cgmath = "*"
+rand = "0.3"
