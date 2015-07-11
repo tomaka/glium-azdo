@@ -150,7 +150,7 @@ fn main() {
         let matrix = persp * view * pos;
 
         let params = glium::DrawParameters {
-            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullCounterClockWise,
+            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockWise,
             depth_test: glium::draw_parameters::DepthTest::IfLess,
             depth_write: true,
             .. Default::default()
