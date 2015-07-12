@@ -165,7 +165,7 @@ fn main() {
         // the parameters to use when drawing
         // nothing fancy, just depth testing and backface culling
         let params = glium::DrawParameters {
-            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockWise,
+            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullCounterClockWise,
             depth_test: glium::draw_parameters::DepthTest::IfLess,
             depth_write: true,
             .. Default::default()
