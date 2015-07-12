@@ -32,8 +32,9 @@ struct Textures<'a> {
 implement_buffer_content!(Textures<'a>);
 implement_uniform_block!(Textures<'a>, tex_address);
 
-const OBJECTS_X: usize = 100;
-const OBJECTS_Y: usize = 100;
+// TODO: putting too many objects crashes the driver
+const OBJECTS_X: usize = 20;
+const OBJECTS_Y: usize = 20;
 const OBJECTS_COUNT: usize = OBJECTS_X * OBJECTS_Y;
 
 fn main() {
@@ -121,8 +122,8 @@ fn main() {
                         [0.0, 0.0, 0.0, 1.0],
                     ];
 
-                    mat[0][0] = 2.0 * (x as isize - OBJECTS_X as isize) as f32;
-                    mat[3][1] = 2.0 * (y as isize - OBJECTS_Y as isize) as f32;
+                    mat[3][0] = 2.0 * x as f32 - OBJECTS_X as f32;
+                    mat[3][1] = 2.0 * y as f32 - OBJECTS_Y as f32;
                     mat[3][2] = 0.0;
 
                     transforms.transforms[index] = mat;
@@ -139,19 +140,10 @@ fn main() {
             primitives: index_buffer.get_primitives_type(),
         };
 
-        let (w, h) = display.get_framebuffer_dimensions();
-        let persp = cgmath::perspective(cgmath::deg(45.0), w as f32 / h as f32, 0.1, 10000.0);
-        let dir = cgmath::Vector3::new(0.0, 0.0, 1.0).normalize();
-        let at = cgmath::Vector3::new(0.0, 0.0, 0.0);
-        let eye = at - dir.mul_s(250.0);
-        let view = cgmath::Matrix4::look_at(&cgmath::Point3::from_vec(&eye),
-                                            &cgmath::Point3::from_vec(&at),
-                                            &cgmath::Vector3::new(0.0, 0.0, 1.0));
-        let pos = cgmath::Matrix4::from_translation(&eye.mul_s(-1.0));
-        let matrix = persp * view * pos;
+        let matrix = build_camera(display.get_framebuffer_dimensions());
 
         let params = glium::DrawParameters {
-            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullClockWise,
+            backface_culling: glium::draw_parameters::BackfaceCullingMode::CullCounterClockWise,
             depth_test: glium::draw_parameters::DepthTest::IfLess,
             depth_write: true,
             .. Default::default()
@@ -174,4 +166,18 @@ fn main() {
             }
         }
     }
+}
+
+fn build_camera((w, h): (u32, u32)) -> cgmath::Matrix4<f32> {
+    let persp = cgmath::perspective(cgmath::deg(45.0), w as f32 / h as f32, 0.1, 10000.0);
+
+    let dir = cgmath::Vector3::new(0.0, 0.0, 1.0).normalize();
+    let at = cgmath::Vector3::new(0.0, 0.0, 0.0);
+    let eye = at - dir.mul_s(250.0);
+
+    let view = cgmath::Matrix4::look_at(&cgmath::Point3::from_vec(&eye),
+                                        &cgmath::Point3::from_vec(&at),
+                                        &cgmath::Vector3::new(0.0, 1.0, 0.0));
+
+    persp * view
 }

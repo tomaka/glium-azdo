@@ -3,7 +3,7 @@
 #extension GL_ARB_shader_draw_parameters : require
 
 // Uniforms / SSBO --------------------------------------------------------------------------------
-layout (std140, binding = 1) buffer CB0
+layout (std140) buffer CB0
 {
     mat4 transforms[];
 };

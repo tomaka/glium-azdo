@@ -4,7 +4,7 @@
 #extension GL_ARB_shader_image_load_store : require
 
 // Uniforms / SSBO ----------------------------------------------------------------------------------------------------
-layout (std430, binding = 0) buffer CB1
+layout (std430) buffer CB1
 {
     sampler2D tex_address[];
 };

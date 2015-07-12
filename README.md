@@ -11,10 +11,14 @@ Go to each individual directory and `cargo run`. Note that this is very recent O
 ## Issues
 
  - Glium doesn't allow creating buffers in write-only mode.
+
  - The original `dynamic_streaming` example does something very inefficient in that it uses one draw call for each of the 16000 triangle. Doing the same thing with glium results in 16000 sync fences being created and managed, and leads to an horribly slow result. The example in this repository doesn't do this and submits everything at once instead, which gives the same result but can't be compared performance-wise to the original code.
+
  - When using multiple segments of the same vertex buffer, glium creates several VAOs instead of using glDrawElementsBaseVertex for example.
 
- - Bindless and sparse buffers & textures are not supported.
+ - The `untextured-objects` example crashes when using too many object. The original example uses a multidraw-indirect buffer in RAM, while the example in this repo uses persistent mapping.
+
+ - Sparse buffers & textures are not supported.
 
 ## Performances
 
