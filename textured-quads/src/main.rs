@@ -33,8 +33,8 @@ implement_buffer_content!(Textures<'a>);
 implement_uniform_block!(Textures<'a>, tex_address);
 
 // TODO: putting too many objects crashes the driver
-const OBJECTS_X: usize = 20;
-const OBJECTS_Y: usize = 20;
+const OBJECTS_X: usize = 200;
+const OBJECTS_Y: usize = 200;
 const OBJECTS_COUNT: usize = OBJECTS_X * OBJECTS_Y;
 
 fn main() {
@@ -48,12 +48,12 @@ fn main() {
         Vertex { position: ( 0.5, -0.5, 0.0), tex_coords: (0.0,  1.0) },
         Vertex { position: ( 0.5,  0.5, 0.0), tex_coords: (1.0,  0.0) },
         Vertex { position: (-0.5,  0.5, 0.0), tex_coords: (1.0,  1.0) },
-    ]);
+    ]).unwrap();
 
     let index_buffer = glium::index::IndexBuffer::new(&display,
         glium::index::PrimitiveType::TrianglesList,
         &[0, 1, 2, 0, 2, 3u16][..]
-    );
+    ).unwrap();
 
     let program = program!(&display,
         410 => {
@@ -63,18 +63,18 @@ fn main() {
     ).unwrap();
 
     let mut commands = glium::index::DrawCommandsIndicesBuffer::
-                                  empty_dynamic_if_supported(&display, OBJECTS_COUNT * 3).unwrap();
-    let mut transform_buffer = glium::uniforms::UniformBuffer::<Transform>::empty_unsized_if_supported(&display,
+                                            empty_dynamic(&display, OBJECTS_COUNT * 3).unwrap();
+    let mut transform_buffer = glium::uniforms::UniformBuffer::<Transform>::empty_unsized(&display,
                                                                   16 * 4 * OBJECTS_COUNT).unwrap();
 
     let textures_storage = (0 .. OBJECTS_COUNT).map(|_| {
         let color1: (f32, f32, f32) = (rand::random(), rand::random(), rand::random());
         let color2: (f32, f32, f32) = (rand::random(), rand::random(), rand::random());
-        let texture = glium::texture::Texture2d::new(&display, vec![vec![color1], vec![color2]]);
-        texture.resident_if_supported().unwrap()
+        let texture = glium::texture::Texture2d::new(&display, vec![vec![color1], vec![color2]]).unwrap();
+        texture.resident().unwrap()
     }).collect::<Vec<_>>();
 
-    let mut cb1 = glium::uniforms::UniformBuffer::<Textures>::empty_unsized_if_supported(&display, OBJECTS_COUNT * 8).unwrap();
+    let mut cb1 = glium::uniforms::UniformBuffer::<Textures>::empty_unsized(&display, OBJECTS_COUNT * 8).unwrap();
     for (i, element) in cb1.map().tex_address.iter_mut().enumerate() {
         *element = glium::texture::TextureHandle::new(&textures_storage[i], &Default::default());
     }
@@ -144,8 +144,11 @@ fn main() {
 
         let params = glium::DrawParameters {
             backface_culling: glium::draw_parameters::BackfaceCullingMode::CullCounterClockWise,
-            depth_test: glium::draw_parameters::DepthTest::IfLess,
-            depth_write: true,
+            depth: glium::draw_parameters::Depth {
+                test: glium::draw_parameters::DepthTest::IfLess,
+                write: true,
+                .. Default::default()
+            },
             .. Default::default()
         };
 

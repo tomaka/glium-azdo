@@ -4,6 +4,6 @@ version = "0.1.0"
 authors = ["Pierre Krieger <pierre.krieger1708@gmail.com>"]
 
 [dependencies]
-glium = { version = "0.7", default-features = false, features = ["glutin", "cgmath"] }
-cgmath = "*"
+glium = { version = "0.9", default-features = false, features = ["glutin", "cgmath"] }
+cgmath = "0.2"
 rand = "0.3"
